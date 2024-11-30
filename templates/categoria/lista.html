@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block titulo%} Produtos {% endblock %}
+
+{% block cards %}    {% endblock %}
+
+{% block titulo_page %} Listagem de Produtos {% endblock %}
+
+{% block conteudo%} 
+
+<button class="btn btn-primary"  onclick="location.href='#'">Novo Produto</button>
+
+<br>
+<br>
+
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Descrição</th>
+            <th scope="col">Ordem</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for categoria in lista %}
+        
+        <tr>
+            <td> {{categoria.id}}</td>
+            <td> {{categoria.nome}}</td>
+            <td>{{categoria.ordem}}</td>
+            <td>
+                <button class="btn btn-primary"  onclick="location.href='#'">Detalhes</button>
+                <button class="btn btn-warning"  onclick="location.href='#'">Alterar</button>
+                <button class="btn btn-danger" onclick="confirmarExclusao('#')">Excluir</button>
+            </td>
+        </tr>
+        {% endfor %}
+      
+    </tbody>
+</table>
+
+
+<script>
+    function confirmarExclusao(url) {
+        const confirmar = confirm("Tem certeza que deseja excluir este produto?");
+        if (confirmar) {
+            window.location.href = url;
+        }
+        // Caso o usuário cancele, nada acontece e a página permanece como está.
+    }
+</script>
+
+{% endblock %}
