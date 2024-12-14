@@ -26,3 +26,18 @@ def form_categoria(request):
         'form':form,
     }
     return render(request, 'categoria/formulario.html', contexto)
+
+def editar_categoria(request, id):
+    categoria = Categoria.objects.get(pk=id)
+    if request.method == 'POST':
+        # combina os dados do formulário submetido com a instância do objeto existente, permitindo editar seus valores.
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            categoria = form.save() # save retorna o objeto salvo
+            lista = []
+            lista.append(categoria) 
+            return render(request, 'categoria/lista.html', {'lista': lista})
+    else:
+         form = CategoriaForm(instance=categoria)
+    return render(request, 'categoria/formulario.html', {'form': form,})
+

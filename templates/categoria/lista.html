@@ -31,7 +31,7 @@
             <td>{{categoria.ordem}}</td>
             <td>
                 <button class="btn btn-primary"  onclick="location.href='#'">Detalhes</button>
-                <button class="btn btn-warning"  onclick="location.href='#'">Alterar</button>
+                <button class="btn btn-warning"  onclick="location='{% url "editar_categoria" item.id %}'">Alterar</button>
                 <button class="btn btn-danger" onclick="confirmarExclusao('#')">Excluir</button>
             </td>
         </tr>
