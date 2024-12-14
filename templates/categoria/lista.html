@@ -9,6 +9,7 @@
 {% block conteudo%} 
 
 <button class="btn btn-primary"  onclick="location.href='{% url 'form_categoria' %}'">Novo Produto</button>
+<button class="btn btn-primary"  onclick="location.href='{% url 'categoria' %}'">Recarregar</button>
 
 <br>
 <br>
@@ -30,9 +31,9 @@
             <td> {{categoria.nome}}</td>
             <td>{{categoria.ordem}}</td>
             <td>
-                <button class="btn btn-primary"  onclick="location.href='#'">Detalhes</button>
-                <button class="btn btn-warning"  onclick="location='{% url "editar_categoria" item.id %}'">Alterar</button>
-                <button class="btn btn-danger" onclick="confirmarExclusao('#')">Excluir</button>
+                <button class="btn btn-primary"  onclick="location='{% url 'detalhes_categoria' categoria.id%}'">Detalhes</button>
+                <button class="btn btn-warning"  onclick="location='{% url 'editar_categoria' categoria.id %}'">Alterar</button>
+                <button class="btn btn-danger" onclick="confirmarExclusao(event, '{{ categoria.id }}'); return false;">Excluir</button>
             </td>
         </tr>
         {% endfor %}
@@ -42,13 +43,32 @@
 
 
 <script>
-    function confirmarExclusao(url) {
-        const confirmar = confirm("Tem certeza que deseja excluir este produto?");
-        if (confirmar) {
-            window.location.href = url;
+    function confirmarExclusao(event, id) {
+        if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+            // Realiza a requisição AJAX para excluir o item
+            fetch(`/categoria/excluir/${id}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',  // Envio do CSRF token corretamente
+                    'Content-Type': 'application/json',  // Garantir que o Django receba o tipo correto
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Se a exclusão foi bem-sucedida, removemos a linha da tabela
+                    event.target.closest('tr').remove();  // Remove a linha do produto da tabela
+                } else {
+                    alert('Erro ao excluir a categoria!');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao excluir a categoria!');
+            });
         }
-        // Caso o usuário cancele, nada acontece e a página permanece como está.
     }
+
+    
 </script>
 
 {% endblock %}
