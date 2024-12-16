@@ -10,6 +10,7 @@ from .forms import *
 def index(request):
     return render(request,'index.html')
 
+
 def categoria(request):
     contexto = {
         'lista': Categoria.objects.all().order_by('-id'),
