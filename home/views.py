@@ -23,7 +23,7 @@ def form_categoria(request):
        form = CategoriaForm(request.POST) # instancia o modelo com os dados do form
        if form.is_valid():# faz a validação do formulário
             form.save() # salva a instancia do modelo no banco de dados
-            messages.success(request, 'Operação realizada com sucesso')
+            messages.success(request, 'Operação realizada com sucesso!')
             return redirect('categoria') # redireciona para a listagem
     else:# método é get, novo registro
         form = CategoriaForm() # formulário vazio
@@ -41,7 +41,7 @@ def editar_categoria(request, id):
         categoria = Categoria.objects.get(pk=id)
     except Categoria.DoesNotExist:
         # Caso o registro não seja encontrado, exibe a mensagem de erro
-        messages.error(request, 'Registro não encontrado')
+        messages.error(request, 'Registro não encontrado!')
         return redirect('categoria')  # Redireciona para a listagem
 
 
@@ -50,7 +50,7 @@ def editar_categoria(request, id):
         form = CategoriaForm(request.POST, instance=categoria)
         if form.is_valid():
             categoria = form.save() # save retorna o objeto salvo
-            messages.success(request, 'Operação realizada com Sucesso')
+            messages.success(request, 'Operação realizada com Sucesso!')
             lista = []
             lista.append(categoria) 
             return render(request, 'categoria/lista.html', {'lista': lista})
@@ -62,12 +62,12 @@ def excluir_categoria(request, id):
     try:
         categoria = Categoria.objects.get(pk=id)
     except Categoria.DoesNotExist:
-        messages.error(request, 'Categoria não encontrada!')
+        messages.error(request, 'Registro não encontrado!')
         return redirect('categoria')  # Redireciona para a listagem
 
     if request.method == "POST":
         categoria.delete()
-        messages.success(request, 'Categoria excluída com sucesso!')
+        messages.success(request, 'Operação realizada com Sucesso!')
         return redirect('categoria')
 
     return render(request, 'categoria/confirmar_exclusao.html', {'categoria': categoria})
