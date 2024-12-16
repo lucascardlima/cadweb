@@ -6,6 +6,15 @@
 
 {% block titulo_page %} Listagem de Produtos {% endblock %}
 
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
 {% block conteudo%} 
 
 <button class="btn btn-primary"  onclick="location.href='{% url 'form_categoria' %}'">Novo Produto</button>
@@ -24,16 +33,22 @@
         </tr>
     </thead>
     <tbody>
+
+        
         {% for categoria in lista %}
         
         <tr>
             <td> {{categoria.id}}</td>
             <td> {{categoria.nome}}</td>
             <td>{{categoria.ordem}}</td>
-            <td>
-                <button class="btn btn-primary"  onclick="location='{% url 'detalhes_categoria' categoria.id%}'">Detalhes</button>
-                <button class="btn btn-warning"  onclick="location='{% url 'editar_categoria' categoria.id %}'">Alterar</button>
-                <button class="btn btn-danger" onclick="confirmarExclusao(event, '{{ categoria.id }}'); return false;">Excluir</button>
+            <td style="display: flex; gap: 5px;">
+                <!-- Botões alinhados com flexbox -->
+                <button class="btn btn-primary" onclick="location.href='{% url 'detalhes_categoria' categoria.id %}'">Detalhes</button>
+                <button class="btn btn-warning" onclick="location.href='{% url 'editar_categoria' categoria.id %}'">Alterar</button>
+                <form method="post" action="{% url 'excluir_categoria' categoria.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
             </td>
         </tr>
         {% endfor %}
@@ -43,32 +58,13 @@
 
 
 <script>
-    function confirmarExclusao(event, id) {
-        if (confirm('Tem certeza que deseja excluir esta categoria?')) {
-            // Realiza a requisição AJAX para excluir o item
-            fetch(`/categoria/excluir/${id}/`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',  // Envio do CSRF token corretamente
-                    'Content-Type': 'application/json',  // Garantir que o Django receba o tipo correto
-                },
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Se a exclusão foi bem-sucedida, removemos a linha da tabela
-                    event.target.closest('tr').remove();  // Remove a linha do produto da tabela
-                } else {
-                    alert('Erro ao excluir a categoria!');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Ocorreu um erro ao excluir a categoria!');
-            });
-        }
-    }
-
-    
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!confirm('Tem certeza que deseja excluir esta categoria?')) {
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    });
 </script>
 
 {% endblock %}
