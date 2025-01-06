@@ -8,4 +8,5 @@ urlpatterns = [
     path('categoria/detalhes/<int:id>/', views.detalhes_categoria, name="detalhes_categoria"),
     path('editar_categoria/<int:id>/', views.editar_categoria, name="editar_categoria"),
     path('categoria/excluir/<int:id>/', views.excluir_categoria, name='excluir_categoria'),
+    path('cliente/', views.cliente, name="cliente"),
 ]

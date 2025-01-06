@@ -72,3 +72,9 @@ def excluir_categoria(request, id):
 
     return render(request, 'categoria/confirmar_exclusao.html', {'categoria': categoria})
 
+def cliente(request):
+    contexto = {
+        'lista': Cliente.objects.all().order_by('-id'),
+    }
+    return render(request, 'cliente/lista.html', contexto)
+

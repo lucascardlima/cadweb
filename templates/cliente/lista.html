@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block titulo%} Cientes {% endblock %}
+
+{% block cards %}    {% endblock %}
+
+{% block titulo_page %} Listagem de Clientes {% endblock %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+{% block conteudo%} 
+
+<button class="btn btn-primary"  onclick="location.href='{% url 'form_categoria' %}'">Novo Cliente</button>
+<button class="btn btn-primary"  onclick="location.href='{% url 'categoria' %}'">Recarregar</button>
+
+<br>
+<br>
+
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nome</th>
+            <th scope="col">CPF</th>
+            <th scope="col">Data de Nascimento</th>
+            <th scope="col">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        
+        {% for clientes in lista %}
+        
+        <tr>
+            <td> {{cliente.id}}</td>
+            <td> {{cliente.nome}}</td>
+            <td>{{cliente.cpf}}</td>
+            <td>{{cliente.datanasc}}</td>
+            <td style="display: flex; gap: 5px;">
+                <!-- Botões alinhados com flexbox -->
+                <button class="btn btn-primary" onclick="location.href='{% url 'detalhes_categoria' categoria.id %}'">Detalhes</button>
+                <button class="btn btn-warning" onclick="location.href='{% url 'editar_categoria' categoria.id %}'">Alterar</button>
+                <form method="post" action="{% url 'excluir_categoria' categoria.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+      
+    </tbody>
+</table>
+
+
+<script>
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!confirm('Tem certeza que deseja excluir este cliente?')) {
+                event.preventDefault(); // Impede o envio do formulário
+            }
+        });
+    });
+</script>
+
+{% endblock %}
