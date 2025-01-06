@@ -17,8 +17,8 @@
 
 {% block conteudo%} 
 
-<button class="btn btn-primary"  onclick="location.href='{% url 'form_categoria' %}'">Novo Cliente</button>
-<button class="btn btn-primary"  onclick="location.href='{% url 'categoria' %}'">Recarregar</button>
+<button class="btn btn-primary"  onclick="location.href='{% url 'form_cliente' %}'">Novo Cliente</button>
+<button class="btn btn-primary"  onclick="location.href='{% url 'cliente' %}'">Recarregar</button>
 
 <br>
 <br>
@@ -36,18 +36,18 @@
     <tbody>
 
         
-        {% for clientes in lista %}
+        {% for cliente in lista %}
         
         <tr>
             <td> {{cliente.id}}</td>
             <td> {{cliente.nome}}</td>
             <td>{{cliente.cpf}}</td>
-            <td>{{cliente.datanasc}}</td>
+            <td>{{cliente.datanasc|date:"d/m/Y"}}</td>
             <td style="display: flex; gap: 5px;">
                 <!-- Botões alinhados com flexbox -->
-                <button class="btn btn-primary" onclick="location.href='{% url 'detalhes_categoria' categoria.id %}'">Detalhes</button>
-                <button class="btn btn-warning" onclick="location.href='{% url 'editar_categoria' categoria.id %}'">Alterar</button>
-                <form method="post" action="{% url 'excluir_categoria' categoria.id %}">
+                <button class="btn btn-primary" onclick="location.href='{% url 'detalhes_cliente' cliente.id %}'">Detalhes</button>
+                <button class="btn btn-warning" onclick="location.href='{% url 'editar_cliente' cliente.id %}'">Alterar</button>
+                <form method="post" action="{% url 'excluir_cliente' cliente.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Excluir</button>
                 </form>

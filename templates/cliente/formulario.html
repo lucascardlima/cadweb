@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block titulo%} Novo Cliente {% endblock %}
+
+{% if form.errors%}
+<ul>
+    {% for fiel, errors in form.errors.items%}
+        <li>{{ field }}: {{ errors }}</li>
+    {% endfor %} 
+</ul>
+{% endif %}
+
+{% block cards %}    {% endblock %}
+
+{% block titulo_page %} Novo Cliente {% endblock %}
+
+{% block conteudo%} 
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }} <!-- Renderiza cada campo do formulário com <p> tags -->
+    <button class="btn btn-primary" type="submit">Enviar</button>
+    <button class="btn btn-secondary"  onclick="location.href='{% url 'cliente' %}'">Voltar</button>
+</form>
+
+{% endblock %}
