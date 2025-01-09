@@ -17,8 +17,8 @@
         <th>#</th>
         <th>Nome</th>
         <th>Preço(R$)</th>
-        <th>Qtd.</th>
         <th>Categoria</th>
+        <th>Qtd.</th>
          <th>Ações</th>
       </tr>
     </thead>
@@ -29,8 +29,8 @@
         <td><img src="{{ produto.img_base64 }}" class="img-fluid" style="max-width: 50px; max-height: 50px;"></td>
         <td>{{ produto.nome }}</td>
         <td>{{ produto.preco}}</td>
-        <td></td>
         <td>{{ produto.categoria }}</td>
+        <td></td>
         <td>
           <button onclick="location='{% url 'detalhes_produto' produto.id %}'" class="btn btn-info btn-sm">Detalhes </button>
           <a href="#" class="btn btn-success btn-sm">Estoque</a>
