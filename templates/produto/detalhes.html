@@ -28,7 +28,7 @@
 
     <div class="form-group">
         <label for="imagem">Imagem:</label>
-        <div>
+        <div class="d-flex justify-content-center">
             {% if produto.img_base64 %}
                 <img src="{{ produto.img_base64 }}" class="img-fluid" style="max-width: 200px; max-height: 200px;">
             {% else %}
