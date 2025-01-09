@@ -30,7 +30,7 @@
         <label for="imagem">Imagem:</label>
         <div>
             {% if produto.img_base64 %}
-                <img src="data:image/png;base64,{{ produto.img_base64 }}" alt="Imagem do produto" class="img-fluid" style="max-width: 200px; max-height: 200px;">
+                <img src="data:image/png;base64,{{ produto.imagem }}" class="img-fluid" style="max-width: 200px; max-height: 200px;">
             {% else %}
                 <p>Imagem não disponível.</p>
             {% endif %}
