@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
 
-{% block titulo%} Detalhes do Produto {% endblock %}
+{% block titulo %} Detalhes do Produto {% endblock %}
 
-{% block cards %}
-
-{% endblock %}
-
-{% block titulo_page %} Detalhes do Produto: {% endblock %}
-
-{% block conteudo %} 
+{% block conteudo %}
 <form>
     {% csrf_token %}
     {{ form.as_p }}
@@ -34,38 +28,17 @@
 
     <div class="form-group">
         <label for="imagem">Imagem:</label>
-        <canvas class="canvas" id="imageCanvas" width="200" height="200"></canvas>
+        <div>
+            {% if produto.img_base64 %}
+                <img src="data:image/png;base64,{{ produto.img_base64 }}" alt="Imagem do produto" class="img-fluid" style="max-width: 200px; max-height: 200px;">
+            {% else %}
+                <p>Imagem não disponível.</p>
+            {% endif %}
+        </div>
     </div>
-   
 
     <div class="mt-3">
         <a href="{% url 'produto' %}" class="btn btn-secondary">Voltar</a>
     </div>
 </form>
 {% endblock %}
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const canvas = document.getElementById("imageCanvas");
-        const ctx = canvas.getContext("2d");
-
-        // Imagem base64 enviada pelo Django
-        const base64Image = "{{ produto.imagem }}"; // Certifique-se de passar a string base64 pelo contexto
-
-        if (base64Image) {
-            const img = new Image();
-            img.onload = function () {
-                // Desenha a imagem no canvas
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            };
-            img.onerror = function () {
-                console.error("Erro ao carregar a imagem.");
-            };
-            img.src = "data:image/jpeg;base64," + base64Image; // Adicione o prefixo base64
-        } else {
-            console.error("Imagem base64 não disponível.");
-        }
-    });
-</script>
-
