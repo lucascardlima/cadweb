@@ -1,44 +1,37 @@
 {% extends 'base.html' %}
 
-{% block titulo %} Detalhes do Produto {% endblock %}
+{% block titulo  %} Contato {% endblock %}
 
-{% block conteudo %}
-<form>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="form-group">
-        <label for="id">ID:</label>
-        <input type="text" class="form-control" id="id" value="{{ produto.id }}" readonly>
-    </div>
+{% block titulo_conteudo %} Detalhes do Produto {% endblock %}
 
-    <div class="form-group">
-        <label for="nome">Nome:</label>
-        <input type="text" class="form-control" id="nome" value="{{ produto.nome }}" readonly>
-    </div>
+{% block conteudo  %}  
+   
+<p>
+   <label >ID:</label><br>
+   <span class="form-control">{{produto.id}}</span>
+  
+</p>
 
-    <div class="form-group">
-        <label for="ordem">Preço(R$):</label>
-        <input type="text" class="form-control" id="ordem" value="{{ produto.preco }}" readonly>
-    </div>
+<p>
+   <label >Nome:</label><br>
+   <span class="form-control">{{produto.nome}}</span>
+</p>
 
-    <div class="form-group">
-        <label for="ordem">Categoria:</label>
-        <input type="text" class="form-control" id="ordem" value="{{ produto.categoria }}" readonly>
-    </div>
+<p>
+   <label >Preoço R$:</label><br>
+   <span class="form-control">{{produto.preco}}</span>
+</p>
 
-    <div class="form-group">
-        <label for="imagem">Imagem:</label>
-        <div class="d-flex justify-content-center">
-            {% if produto.img_base64 %}
-                <img src="{{ produto.img_base64 }}" class="img-fluid" style="max-width: 200px; max-height: 200px;">
-            {% else %}
-                <p>Imagem não disponível.</p>
-            {% endif %}
-        </div>
-    </div>
+<p>
+   <label >Imagen:</label><br>
+   <span class="form-control"> 
+      <img  src="{{produto.img_base64}} " width="200" height="200">
+    </span>
+</p>
 
-    <div class="mt-3">
-        <a href="{% url 'produto' %}" class="btn btn-secondary">Voltar</a>
-    </div>
+ <div class="mt-3">
+    <a href="{% url 'produto' %}" class="btn btn-secondary">Voltar</a>
+</div>
+
 </form>
 {% endblock %}
