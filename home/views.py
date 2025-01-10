@@ -195,12 +195,13 @@ def excluir_produto(request, id):
     return render(request, 'produto/confirmar_exclusao.html', {'produto': produto})
 
 def ajustar_estoque(request, id):
-    produto = produto = Produto.objects.get(pk=id)
+    produto = Produto.objects.get(pk=id)
     estoque = produto.estoque # pega o objeto estoque relacionado ao produto
     if request.method == 'POST':
         form = EstoqueForm(request.POST, instance=estoque)
         if form.is_valid():
             estoque = form.save()
+            messages.success(request, 'Operação realizada com Sucesso!')
             lista = []
             lista.append(estoque.produto) 
             return render(request, 'produto/lista.html', {'lista': lista})
