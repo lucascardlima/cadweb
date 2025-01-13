@@ -93,7 +93,16 @@ class EstoqueForm(forms.ModelForm):
 
         widgets = {
             'produto': forms.HiddenInput(),
-            'qtde': forms.TextInput(attrs={'class': 'inteiro form-control',}),
+            'qtde': forms.NumberInput(attrs={
+                'class': 'inteiro form-control',
+                'min': 0,  # Evita valores negativos no navegador
+                'placeholder': 'Digite a quantidade',
+            }),
         }
 
+    def clean_qtde(self):
+        qtde = self.cleaned_data.get('qtde')
+        if qtde < 0:
+            raise forms.ValidationError("O valor de quantidade não pode ser negativo.")
+        return qtde
 

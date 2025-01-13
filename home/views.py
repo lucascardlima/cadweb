@@ -200,15 +200,15 @@ def excluir_produto(request, id):
 
 def ajustar_estoque(request, id):
     produto = Produto.objects.get(pk=id)
-    estoque = produto.estoque # pega o objeto estoque relacionado ao produto
+    estoque = produto.estoque  # Pega o objeto estoque relacionado ao produto
     if request.method == 'POST':
         form = EstoqueForm(request.POST, instance=estoque)
         if form.is_valid():
-            estoque = form.save()
-            messages.success(request, 'Operação realizada com Sucesso!')
-            lista = []
-            lista.append(estoque.produto) 
-            return render(request, 'produto/lista.html', {'lista': lista})
+            form.save()
+            messages.success(request, 'Operação realizada com sucesso!')
+            return redirect('produto')  # Redireciona para a listagem de produtos
+        else:
+            messages.error(request, 'Erro ao ajustar o estoque. Verifique os valores inseridos.')
     else:
-         form = EstoqueForm(instance=estoque)
-    return render(request, 'produto/estoque.html', {'form': form,})
+        form = EstoqueForm(instance=estoque)
+    return render(request, 'produto/estoque.html', {'form': form})
