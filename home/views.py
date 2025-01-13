@@ -164,21 +164,25 @@ def editar_produto(request, id):
     except Produto.DoesNotExist:
         # Caso o registro não seja encontrado, exibe a mensagem de erro
         messages.error(request, 'Registro não encontrado!')
-        return redirect('categoria')  # Redireciona para a listagem
-
+        return redirect('produto')  # Redireciona para a listagem
 
     if request.method == 'POST':
-        # combina os dados do formulário submetido com a instância do objeto existente, permitindo editar seus valores.
-        form = ProdutoForm(request.POST, instance=produto)
-        if form.is_valid():
-            produto = form.save() # save retorna o objeto salvo
-            messages.success(request, 'Operação realizada com Sucesso!')
-            lista = []
-            lista.append(produto) 
-            return render(request, 'produto/lista.html', {'lista': lista})
+        action = request.POST.get('action')  # Identifica a ação do botão clicado
+
+        if action == 'save':  # Verifica se o botão "Salvar" foi clicado
+            form = ProdutoForm(request.POST, instance=produto)
+            if form.is_valid():
+                produto = form.save()  # save retorna o objeto salvo
+                messages.success(request, 'Operação realizada com Sucesso!')
+                lista = [produto]
+                return render(request, 'produto/lista.html', {'lista': lista})
+        else:
+            # Se outro botão foi clicado (como "Voltar"), não faz nada e redireciona
+            return redirect('produto')  # Substitua 'categoria' pela URL desejada para "Voltar"
     else:
-         form = ProdutoForm(instance=produto)
-    return render(request, 'produto/formulario.html', {'form': form,})
+        form = ProdutoForm(instance=produto)
+    return render(request, 'produto/formulario.html', {'form': form})
+
 
 def excluir_produto(request, id):
     try:
