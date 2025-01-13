@@ -1,5 +1,3 @@
-
-
 {% extends "base.html" %}
 
 {% block titulo_conteudo %} Listagem de Produtos {% endblock titulo_conteudo %}
@@ -9,8 +7,21 @@
 <div class="barrabotoes">
 <button onClick="location='{% url "form_produto" %}'" type="button" class="btn btn-primary btn-sm">Inserir Novo</button>
 <button onClick="location='{% url "produto" %}'" type="button" class="btn btn-primary btn-sm">Recarregar</button>
-
 </div>
+
+<style>
+  .table-hover tbody tr {
+    height: 60px; /* Define o tamanho da linha */
+  }
+  .table-hover img {
+    max-width: 50px;
+    max-height: 50px;
+  }
+  .table-hover td, .table-hover th {
+    vertical-align: middle; /* Alinha o conteúdo verticalmente */
+    text-align: center; /* Centraliza o texto */
+  }
+</style>
 
 <table class="table table-hover">
     <thead>
@@ -21,40 +32,40 @@
         <th>Preço(R$)</th>
         <th>Categoria</th>
         <th>Qtde</th>
-         <th>Ações</th>
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
     {% for produto in lista %}
       <tr>
         <td>{{ produto.id }}</td>
-        <td><img src="{{ produto.img_base64 }}" class="img-fluid" style="max-width: 50px; max-height: 50px;"></td>
+        <td><img src="{{ produto.img_base64 }}" class="img-fluid"></td>
         <td>{{ produto.nome }}</td>
-        <td>{{ produto.preco}}</td>
+        <td>{{ produto.preco }}</td>
         <td>{{ produto.categoria }}</td>
         <td>{{ produto.estoque.qtde }}</td>
         <td style="display: flex; gap: 10px;">
-          <button onclick="location='{% url 'detalhes_produto' produto.id %}'" class="btn btn-info btn-sm">Detalhes </button>
+          <button onclick="location='{% url 'detalhes_produto' produto.id %}'" class="btn btn-info btn-sm">Detalhes</button>
           <a href="{% url 'ajustar_estoque' produto.id %}" class="btn btn-success btn-sm">Estoque</a>
           <a href="{% url 'editar_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
           <form method="post" action="{% url 'excluir_produto' produto.id %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
-        </form>
+          </form>
         </td>
       </tr>
-      {% endfor %}
+    {% endfor %}
     </tbody>
-  </table>
+</table>
 
-  <script>
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!confirm('Tem certeza que deseja excluir este produto?')) {
-                event.preventDefault(); // Impede o envio do formulário
-            }
-        });
-    });
+<script>
+  document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', event => {
+          if (!confirm('Tem certeza que deseja excluir este produto?')) {
+              event.preventDefault(); // Impede o envio do formulário
+          }
+      });
+  });
 </script>
 
 {% endblock conteudo %}
