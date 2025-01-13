@@ -23,17 +23,17 @@
   }
   .table-hover td:last-child {
     display: flex;
+    flex-direction: column; /* Empilha os botões verticalmente */
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    height: 100%; /* Garante que o conteúdo ocupe toda a altura */
+    gap: 10px; /* Espaçamento entre os botões */
   }
   .table-hover td:last-child button,
   .table-hover td:last-child a,
   .table-hover td:last-child form {
-    margin: 20; /* Remove margens extras */
+    margin: 10px 0; /* Adiciona 10px de margem acima e abaixo */
     display: flex;
-    align-items: center; /* Centraliza os botões */
+    align-items: center; /* Centraliza o conteúdo do botão */
     height: 40px; /* Define um tamanho uniforme para os botões */
   }
 </style>
