@@ -11,15 +11,30 @@
 
 <style>
   .table-hover tbody tr {
-    height: 60px; /* Define o tamanho da linha */
+    height: 60px; /* Define a altura das linhas */
   }
   .table-hover img {
     max-width: 50px;
     max-height: 50px;
   }
   .table-hover td, .table-hover th {
-    vertical-align: middle; /* Alinha o conteúdo verticalmente */
+    vertical-align: middle; /* Alinha verticalmente */
     text-align: center; /* Centraliza o texto */
+  }
+  .table-hover td:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 100%; /* Garante que o conteúdo ocupe toda a altura */
+  }
+  .table-hover td:last-child button,
+  .table-hover td:last-child a,
+  .table-hover td:last-child form {
+    margin: 0; /* Remove margens extras */
+    display: flex;
+    align-items: center; /* Centraliza os botões */
+    height: 40px; /* Define um tamanho uniforme para os botões */
   }
 </style>
 
@@ -44,7 +59,7 @@
         <td>{{ produto.preco }}</td>
         <td>{{ produto.categoria }}</td>
         <td>{{ produto.estoque.qtde }}</td>
-        <td style="display: flex; gap: 10px;">
+        <td>
           <button onclick="location='{% url 'detalhes_produto' produto.id %}'" class="btn btn-info btn-sm">Detalhes</button>
           <a href="{% url 'ajustar_estoque' produto.id %}" class="btn btn-success btn-sm">Estoque</a>
           <a href="{% url 'editar_produto' produto.id %}" class="btn btn-warning btn-sm">Editar</a>
