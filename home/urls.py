@@ -23,4 +23,10 @@ urlpatterns = [
     path('produto/estoque/<int:id>/', views.ajustar_estoque, name="ajustar_estoque"),
     path('editar_produto/<int:id>/', views.editar_produto, name="editar_produto"),
     path('produto/excluir/<int:id>/', views.excluir_produto, name='excluir_produto'),
+
+######################################## TESTES ##################################################
+    path('teste1/', views.teste1, name='teste1'),
+    path('teste2/', views.teste2, name='teste2'),
+     path('teste3/', views.teste3, name='teste3'),
+    path('buscar_dados/<str:app_modelo>/', views.buscar_dados, name='buscar_dados'),
 ]
