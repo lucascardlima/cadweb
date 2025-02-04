@@ -45,6 +45,10 @@
             <td>{{cliente.datanasc|date:"d/m/Y"}}</td>
             <td style="display: flex; gap: 5px;">
                 <!-- Botões alinhados com flexbox -->
+                <button
+                    onclick="location='{% url 'novo_pedido' cliente.id %}'"
+                    type="button" class="btn btn-primary btn-sm">Novo Pedido
+                </button>
                 <button class="btn btn-primary" onclick="location.href='{% url 'detalhes_cliente' cliente.id %}'">Detalhes</button>
                 <button class="btn btn-warning" onclick="location.href='{% url 'editar_cliente' cliente.id %}'">Alterar</button>
                 <form method="post" action="{% url 'excluir_cliente' cliente.id %}">
