@@ -32,7 +32,8 @@ urlpatterns = [
 
 ###################################### PEDIDO #####################################################
     path('pedido/', views.pedido, name='pedido'),
-    path('pedido/form/<int:id>/', views.novo_pedido, name='novo_pedido')
+    path('pedido/form/<int:id>/', views.novo_pedido, name='novo_pedido'),
+    path('pedido/detalhes/<int:id>/', views.detalhes_pedido, name='detalhes_pedido'),
 
 ]
 
