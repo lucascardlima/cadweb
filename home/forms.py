@@ -129,7 +129,7 @@ class ItemPedidoForm(forms.ModelForm):
      def clean_qtde(self):
         qtde = self.cleaned_data.get('qtde')
         if not isinstance(qtde, int) or qtde < 0:
-            raise ValidationError('A quantidade deve ser um número inteiro positivo.')
+            raise forms.ValidationError('A quantidade deve ser um número inteiro positivo.')
         return qtde
 
 class PagamentoForm(forms.ModelForm):

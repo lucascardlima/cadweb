@@ -469,4 +469,3 @@ def remover_pagamento(request, id):
         return redirect('form_pagamento', id=pagamento_id)
     
     return redirect('form_pagamento', id=pagamento_id)
-
