@@ -1,3 +1,4 @@
+from django.forms import ModelForm
 from django import forms
 from .models import *
 from datetime import datetime
@@ -106,65 +107,61 @@ class EstoqueForm(forms.ModelForm):
             raise forms.ValidationError("O valor de quantidade não pode ser negativo.")
         return qtde
 
-class Pedido(models.Model):
-
-    NOVO = 1
-    EM_ANDAMENTO = 2
-    CONCLUIDO = 3
-    CANCELADO = 4
-
-
-    STATUS_CHOICES = [
-        (NOVO, 'Novo'),
-        (EM_ANDAMENTO, 'Em Andamento'),
-        (CONCLUIDO, 'Concluído'),
-        (CANCELADO, 'Cancelado'),
-    ]
-
-
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    produtos = models.ManyToManyField(Produto, through='ItemPedido')
-    data_pedido = models.DateTimeField(auto_now_add=True)
-    status = models.IntegerField(choices=STATUS_CHOICES, default=NOVO)
-
-
-    def __str__(self):
-            return f"Pedido {self.id} - Cliente: {self.cliente.nome} - Status: {self.get_status_display()}"
-    
-    @property
-    def data_pedidof(self):
-        "Retorna a data no formato DD/MM/AAAA HH:MM"
-        if self.data_pedido:
-            return self.data_pedido.strftime('%d/%m/%Y %H:%M')
-        return None
-        
-class ItemPedido(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-    qtde = models.PositiveIntegerField()
-    preco = models.DecimalField(max_digits=10, decimal_places=2)
-
-
-    def __str__(self):
-        return f"{self.produto.nome} (Qtd: {self.qtde}) - Preço Unitário: {self.preco}"   
-
 class PedidoForm(forms.ModelForm):
-    class Meta:
-        model = Pedido
-        fields = ['cliente']
-        widgets = {
-            'cliente': forms.HiddenInput(),  # Campo oculto para armazenar o ID
-        }
+     class Meta:
+          model = Pedido
+          fields = ['cliente']
+          widgets = {
+               'cliente': forms.HiddenInput(),
+          }
 
 class ItemPedidoForm(forms.ModelForm):
-    class Meta:
-        model = ItemPedido
-        fields = ['pedido','produto', 'qtde']
+     class Meta:
+          model = ItemPedido
+          fields = ['pedido', 'produto', 'qtde']
 
+          widgets = {
+               'pedido': forms.HiddenInput(),
+               'produto': forms.HiddenInput(),
+               'qtde': forms.TextInput(attrs={'class': 'inteiro form-control',}),
+          }
+     
+     def clean_qtde(self):
+        qtde = self.cleaned_data.get('qtde')
+        if not isinstance(qtde, int) or qtde < 0:
+            raise ValidationError('A quantidade deve ser um número inteiro positivo.')
+        return qtde
 
-        widgets = {
-            'pedido': forms.HiddenInput(),  # Campo oculto para armazenar o ID
-            'produto': forms.HiddenInput(),  # Campo oculto para armazenar o ID
-            'qtde':forms.TextInput(attrs={'class': 'form-control',}),
-        }
+class PagamentoForm(forms.ModelForm):
+     class Meta:
+          model = Pagamento
+          fields = ['pedido', 'forma', 'valor']
+          widgets = {
+               'pedido': forms.HiddenInput(),
+               'forma': forms.Select(attrs={'class': 'form-control'}),
+               'valor': forms.TextInput(attrs={
+                    'class': 'money form-control',
+                    'maxlenght': '500',
+                    'placeholder': '0.000,00',
+            }),
+         }
+     
+     def __init__(self, *args, **kwargs):
+          super(PagamentoForm, self).__init__(*args, **kwargs)
+          self.fields['valor'].localize = True 
+          self.fields['valor'].widget.is_localized = True 
 
+     
+     def clean_valor(self):
+        valor = self.cleaned_data.get('valor')
+        pedido = self.cleaned_data.get('pedido')
+
+        if valor <= 0:
+            raise forms.ValidationError("O valor deve ser maior que zero.")
+
+        if pedido:
+            debito = pedido.debito  # Obtém o valor do débito do pedido
+            if valor > debito:
+                raise forms.ValidationError("O valor do pagamento não pode ser maior que o débito do pedido.")
+
+        return valor

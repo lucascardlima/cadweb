@@ -44,3 +44,103 @@ class Estoque(models.Model):
 
     def __str__(self):
         return f'{self.produto.nome} - Quantidade: {self.qtde}'
+    
+class Pedido(models.Model):
+
+    NOVO = 1
+    EM_ANDAMENTO = 2
+    CONCLUIDO = 3
+    CANCELADO = 4
+
+    STATUS_CHOICES = [
+        (NOVO, 'Novo'),
+        (EM_ANDAMENTO, 'Em Andamento'),
+        (CONCLUIDO, 'Concluído'),
+        (CANCELADO, 'Cancelado'),
+    ]
+
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    produtos = models.ManyToManyField(Produto, through='ItemPedido')
+    data_pedido = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=NOVO)
+
+    def __str__(self):
+            return f"Pedido {self.id} - Cliente: {self.cliente.nome} - Status: {self.get_status_display()}"
+    
+    @property
+    def data_pedidof(self):
+        if self.data_pedido:
+            return self.data_pedido.strftime('%d/%m/%Y %H:%M')
+        return None
+
+    @property 
+    def total(self):
+        total = sum(item.qtde * item.preco for item in self.itempedido_set.all())
+        return total
+    
+    @property
+    def qtdeItens(self):
+        return self.itempedido_set.count()
+    
+    @property
+    def pagamentos(self):
+        return Pagamento.objects.filter(pedido=self)
+
+    @property
+    def total_pago(self):
+        total = sum(pagamento.valor for pagamento in self.pagamentos.all())
+        return total
+    
+    @property
+    def debito(self):
+        valor_debito = self.total - self.total_pago 
+        return valor_debito
+
+class ItemPedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)    
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)  
+    qtde = models.PositiveIntegerField()
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.produto.nome} (Qtde: {self.qtde}) - Preço Unitário: {self.preco}"
+    
+    @property
+    def calculoTotal(self):
+        total = self.qtde * self.preco
+        return total
+
+    @property
+    def total(self):
+        total = sum(item.qtde * item.preco for item in self.itempedido_set.all())
+        return total
+
+
+class Pagamento(models.Model):
+    DINHEIRO = 1
+    CREDITO = 2
+    DEBITO = 3
+    PIX = 4
+    TICKET = 5
+    OUTRA = 6
+
+    FORMA_CHOICES = [
+        (DINHEIRO, 'Dinheiro'),
+        (CREDITO, 'Credito'),
+        (DEBITO, 'Debito'),
+        (PIX, 'Pix'),
+        (TICKET, 'Ticket'),
+        (OUTRA, 'Outra'),
+    ]
+
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE) 
+    forma = models.IntegerField(choices=FORMA_CHOICES)
+    valor = models.DecimalField(max_digits = 10, decimal_places=2, blank = False )
+    data_pgto = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def data_pgtof(self):
+        """Retorna a data formatada: DD/MM/AAAA HH:MM"""
+        if self.data_pgto:
+            return self.data_pgto.strftime('%d/%m/%Y %H:%M')
+        return None
