@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
+from decimal import Decimal
 from django.apps import apps
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -468,3 +469,43 @@ def remover_pagamento(request, id):
         return redirect('form_pagamento', id=pagamento_id)
     
     return redirect('form_pagamento', id=pagamento_id)
+
+def notafiscal(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+
+    # Se o pedido já contém os valores, podemos formatá-los corretamente antes de enviar para o template
+    # Garantir que valores como total, impostos, etc., sejam passados corretamente como string ou formatados
+    total = pedido.total
+    icms = pedido.icms
+    pis = pedido.pis
+    ipi = pedido.ipi
+    cofins = pedido.cofins
+    total_impostos = pedido.impostos_totais  # Corrigido para impostos_totais
+    valor_final = pedido.valor_final
+
+    # Converter os valores de Decimal para string com o formato correto
+    total_formatado = f"R$ {total:.2f}"
+    icms_formatado = f"R$ {icms:.2f}"
+    pis_formatado = f"R$ {pis:.2f}"
+    ipi_formatado = f"R$ {ipi:.2f}"
+    cofins_formatado = f"R$ {cofins:.2f}"
+    total_impostos_formatado = f"R$ {total_impostos:.2f}"
+    valor_final_formatado = f"R$ {valor_final:.2f}"
+
+    if request.method == "POST":
+        # Criação da Nota Fiscal
+        nota_fiscal = NotaFiscal.objects.create(pedido=pedido)
+        return redirect('detalhes_nota_fiscal', nota_fiscal.id)  # Corrigido o nome da variável e o redirecionamento
+    
+    # Passando os valores formatados para o template
+    return render(request, 'notafiscal/notafiscal.html', {
+        'pedido': pedido,
+        'total': total_formatado,
+        'icms': icms_formatado,
+        'pis': pis_formatado,
+        'ipi': ipi_formatado,
+        'cofins': cofins_formatado,
+        'total_impostos': total_impostos_formatado,
+        'valor_final': valor_final_formatado,
+        'chave_acesso': pedido.chave_acesso
+    })

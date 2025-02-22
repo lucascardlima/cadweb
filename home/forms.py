@@ -165,3 +165,20 @@ class PagamentoForm(forms.ModelForm):
                 raise forms.ValidationError("O valor do pagamento não pode ser maior que o débito do pedido.")
 
         return valor
+
+class NotaFiscalForm(forms.ModelForm):
+    class Meta:
+        model = NotaFiscal
+        exclude = ['data_emissao']  # Exclui o campo do formulário
+        fields = ['pedido', 'chave_acesso', 'data_emissao', 'total_pedido', 'icms', 'ipi', 'pis', 'cofins', 'impostos_totais', 'valor_final']
+        widgets = {
+            'chave_acesso': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'data_emissao': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'total_pedido': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'icms': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'ipi': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'pis': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'cofins': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'impostos_totais': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'valor_final': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }

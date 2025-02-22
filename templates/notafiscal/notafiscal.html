@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota Fiscal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { border: 1px solid #000; padding: 10px; }
+        .header, .footer { text-align: center; font-weight: bold; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .table, .table th, .table td { border: 1px solid black; padding: 5px; text-align: left; }
+        .totals { margin-top: 10px; }
+        .totals div { margin: 5px 0; }
+        .btn-download { margin-top: 15px; padding: 10px; background-color: red; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container" id="notaFiscal">
+        <div class="header">DANFE - Documento Auxiliar da Nota Fiscal Eletrônica</div>
+        <div><strong>CHAVE DE ACESSO:</strong> {{ chave_acesso }}</div>
+        <br>
+        <div><strong>Destinatário:</strong> {{ pedido.cliente.nome }}</div>
+        <div><strong>CPF/CNPJ:</strong> {{ pedido.cliente.cpf_cnpj }}</div>
+        <br>
+        <table class="table">
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Qtd</th>
+                <th>Valor Unitário</th>
+                <th>Total</th>
+            </tr>
+            {% for item in pedido.itempedido_set.all %}
+            <tr>
+                <td>{{ item.produto.id }}</td>
+                <td>{{ item.produto.nome }}</td>
+                <td>{{ item.qtde }}</td>
+                <td>R$ {{ item.preco }}</td>
+                <td>R$ {{ item.calculoTotal }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="totals">
+            <div><strong>Total sem impostos:</strong> {{ total }}</div> <!-- Corrigido -->
+            <div><strong>ICMS (18%):</strong> {{ icms }}</div> <!-- Corrigido -->
+            <div><strong>PIS (1.65%):</strong> {{ pis }}</div> <!-- Corrigido -->
+            <div><strong>IPI (5%):</strong> {{ ipi }}</div> <!-- Corrigido -->
+            <div><strong>COFINS (7.6%):</strong> {{ cofins }}</div> <!-- Corrigido -->
+            <div><strong>Total Impostos:</strong> {{ total_impostos }}</div> <!-- Corrigido -->
+            <div><strong>Valor Final:</strong> {{ valor_final }}</div> <!-- Corrigido -->
+        </div>
+        <br>
+        <div class="footer">Recebemos os produtos constantes nesta nota fiscal.</div>
+    </div>
+
+    <!-- Botão para baixar em PDF -->
+    <button class="btn-download" onclick="gerarPDF()">Baixar Nota Fiscal em PDF</button>
+
+    <script>
+        function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.text("DANFE - Documento Auxiliar da Nota Fiscal Eletrônica", 10, 10);
+            doc.text("CHAVE DE ACESSO: {{ chave_acesso }}", 10, 20);
+            doc.text("Destinatário: {{ pedido.cliente.nome }}", 10, 30);
+            doc.text("CPF/CNPJ: {{ pedido.cliente.cpf_cnpj }}", 10, 40);
+            doc.text("-------------------------------------------------------------------", 10, 50);
+
+            let y = 60;
+            document.querySelectorAll(".table tr").forEach((row, index) => {
+                let rowText = "";
+                row.querySelectorAll("td, th").forEach(cell => {
+                    rowText += cell.innerText + "  ";
+                });
+                doc.text(rowText, 10, y);
+                y += 10;
+            });
+
+            y += 10;
+            doc.text("-------------------------------------------------------------------", 10, y);
+            y += 10;
+            doc.text("Total sem impostos: {{ total }}", 10, y); <!-- Corrigido -->
+            y += 10;
+            doc.text("ICMS (18%): {{ icms }}", 10, y); <!-- Corrigido -->
+            y += 10;
+            doc.text("PIS (1.65%): {{ pis }}", 10, y); <!-- Corrigido -->
+            y += 10;
+            doc.text("IPI (5%): {{ ipi }}", 10, y); <!-- Corrigido -->
+            y += 10;
+            doc.text("COFINS (7.6%): {{ cofins }}", 10, y); <!-- Corrigido -->
+            y += 10;
+            doc.text("Total Impostos: {{ total_impostos }}", 10, y); <!-- Corrigido -->
+            y += 10;
+            doc.text("Valor Final: {{ valor_final }}", 10, y); <!-- Corrigido -->
+            y += 10;
+            doc.text("-------------------------------------------------------------------", 10, y);
+            y += 10;
+            doc.text("Recebemos os produtos constantes nesta nota fiscal.", 10, y);
+
+            doc.save("nota_fiscal.pdf");
+        }
+    </script>
+</body>
+</html>
