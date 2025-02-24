@@ -4,6 +4,7 @@ from django.db import transaction, IntegrityError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from decimal import Decimal
+from django.contrib.auth import authenticate, login
 from django.apps import apps
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
@@ -509,3 +510,21 @@ def notafiscal(request, pedido_id):
         'valor_final': valor_final_formatado,
         'chave_acesso': pedido.chave_acesso
     })
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        # Tenta autenticar o usuário
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            # Se a autenticação for bem-sucedida, faz o login
+            login(request, user)
+            return redirect('home')  # Redireciona para a página inicial (ajuste conforme necessário)
+        else:
+            # Se a autenticação falhar, adiciona uma mensagem de erro
+            messages.error(request, "Usuário ou senha inválidos.")
+    
+    return render(request, 'login.html')

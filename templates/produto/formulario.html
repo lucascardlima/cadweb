@@ -19,7 +19,6 @@
             data-url="{% url 'buscar_dados' 'home.Categoria' %}" 
             data-hidden="#id_categoria" >
     </p>
-    
 
 
     <fieldset class="fieldset">
@@ -72,6 +71,15 @@
 
     $(document).ready(function() {
 
+        $(document).ready(function() {
+            // Remover a máscara do preço antes de enviar o formulário
+            $('form').submit(function() {
+                var preco = $('#id_preco').val();
+                // Remove a máscara de moeda
+                preco = preco.replace(/[^\d,.-]/g, '').replace(',', '.');  // Ajuste para a formatação local
+                $('#id_preco').val(preco);  // Atribui o valor sem máscara de volta ao campo
+            });
+        });
 
         // Configura inicialização das imagens base64 para todo campo da classe img_init
         $('.img_init').each(function() {
